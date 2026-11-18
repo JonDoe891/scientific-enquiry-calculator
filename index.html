@@ -1,0 +1,353 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Fundamentals of Scientific Enquiry Grade Calculator</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    max-width: 900px;
+    margin: auto;
+    padding: 20px;
+    background: #f8f9fb;
+    color: #333;
+}
+
+h1 {
+    text-align: center;
+    color: #0b5394;
+}
+
+.subtitle {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.12);
+    padding: 20px;
+    margin-bottom: 25px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    background: #0b5394;
+    color: white;
+    padding: 12px;
+}
+
+td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+}
+
+td:nth-child(2),
+td:nth-child(3) {
+    text-align: center;
+}
+
+input[type=number] {
+    width: 90px;
+    padding: 9px;
+    font-size: 16px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.totalRow {
+    font-weight: bold;
+    background: #eef5ff;
+}
+
+#total {
+    font-size: 26px;
+    color: #0b5394;
+}
+
+.targetBox {
+    text-align: center;
+}
+
+.targetBox input {
+    width: 130px;
+}
+
+#needed {
+    margin-top: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #0b5394;
+}
+
+.message {
+    font-size: 17px;
+    margin-top: 10px;
+}
+
+.info {
+    margin-top: 25px;
+    background: #eef5ff;
+    border-left: 5px solid #0b5394;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+@media(max-width:700px) {
+
+    body {
+        padding: 10px;
+    }
+
+    .card {
+        padding: 12px;
+    }
+
+    table, thead, tbody, tr, td, th {
+        display: block;
+    }
+
+    thead {
+        display: none;
+    }
+
+    tr {
+        margin-bottom: 15px;
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 10px;
+    }
+
+    td {
+        border: none;
+        text-align: left !important;
+        padding: 8px;
+    }
+
+    td::before {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    tr td:nth-child(1)::before {
+        content: "Assessment";
+    }
+
+    tr td:nth-child(2)::before {
+        content: "Weight";
+    }
+
+    tr td:nth-child(3)::before {
+        content: "Your Score (%)";
+    }
+
+    .totalRow {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .totalRow td::before {
+        display: none;
+    }
+
+    .totalRow td {
+        display: block;
+    }
+
+    input[type=number] {
+        width: 100%;
+        max-width: 150px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<h1>Fundamentals of Scientific Enquiry</h1>
+
+<p class="subtitle">
+Enter your assessment scores (0–100) to calculate your overall grade and find out what you need on the Lab Report.
+</p>
+
+<div class="card">
+
+<table>
+
+<thead>
+<tr>
+    <th>Assessment</th>
+    <th>Weight</th>
+    <th>Your Score (%)</th>
+</tr>
+</thead>
+
+<tbody>
+
+<tr>
+    <td>Weekly Journals</td>
+    <td>15%</td>
+    <td><input type="number" min="0" max="100" step="any" oninput="calculate()"></td>
+</tr>
+
+<tr>
+    <td>Scientific Method Experiment Plan</td>
+    <td>20%</td>
+    <td><input type="number" min="0" max="100" step="any" oninput="calculate()"></td>
+</tr>
+
+<tr>
+    <td>Paradigm Shift Seminar</td>
+    <td>15%</td>
+    <td><input type="number" min="0" max="100" step="any" oninput="calculate()"></td>
+</tr>
+
+<tr>
+    <td>Lab Report</td>
+    <td>50%</td>
+    <td><input type="number" min="0" max="100" step="any" oninput="calculate()"></td>
+</tr>
+
+<tr class="totalRow">
+    <td><strong>Total</strong></td>
+    <td>100%</td>
+    <td id="total">0.0%</td>
+</tr>
+
+</tbody>
+</table>
+
+</div>
+
+<div class="card targetBox">
+
+<h2>What do I need on the Lab Report?</h2>
+
+<p>Enter your target overall grade.</p>
+
+<input
+    type="number"
+    id="target"
+    placeholder="e.g. 70"
+    min="0"
+    max="100"
+    step="any"
+    oninput="calculate()"
+>
+
+<div id="needed">--%</div>
+
+<div class="message" id="message"></div>
+
+</div>
+
+<div class="info">
+
+<strong>How it works</strong>
+
+<ul>
+    <li>Your overall grade is calculated using the weighted assessment percentages.</li>
+    <li>The Lab Report accounts for 50% of your final grade.</li>
+    <li>The target calculator tells you what score you need on the Lab Report to achieve your desired overall grade.</li>
+    <li>Blank assessment scores are treated as zero.</li>
+</ul>
+
+</div>
+
+<script>
+
+function calculate() {
+
+    const weights = [0.15, 0.20, 0.15, 0.50];
+
+    const inputs = document.querySelectorAll("tbody input");
+
+    let total = 0;
+    let coursework = 0;
+    let invalid = false;
+
+    inputs.forEach((box, index) => {
+
+        let score = box.value === "" ? 0 : parseFloat(box.value);
+
+        if (!Number.isFinite(score) || score < 0 || score > 100) {
+            invalid = true;
+            return;
+        }
+
+        total += score * weights[index];
+
+        if (index < 3) {
+            coursework += score * weights[index];
+        }
+
+    });
+
+    const totalDisplay = document.getElementById("total");
+
+    if (invalid) {
+        totalDisplay.innerHTML = "Check scores";
+    } else {
+        totalDisplay.innerHTML = total.toFixed(1) + "%";
+    }
+
+    const targetInput = document.getElementById("target");
+    const neededDisplay = document.getElementById("needed");
+    const messageDisplay = document.getElementById("message");
+
+    const target = targetInput.value === "" ? NaN : parseFloat(targetInput.value);
+
+    if (invalid || targetInput.value === "") {
+        neededDisplay.innerHTML = "--%";
+        messageDisplay.innerHTML = "";
+        return;
+    }
+
+    if (!Number.isFinite(target) || target < 0 || target > 100) {
+        neededDisplay.innerHTML = "--%";
+        messageDisplay.innerHTML = "Please enter a target between 0 and 100.";
+        return;
+    }
+
+    let needed = (target - coursework) / 0.50;
+
+    if (needed <= 0) {
+
+        neededDisplay.innerHTML = "0%";
+        messageDisplay.innerHTML = "You have already secured this target grade!";
+
+    } else if (needed > 100) {
+
+        neededDisplay.innerHTML = "Impossible";
+        messageDisplay.innerHTML = "You would need more than 100% on the Lab Report to reach this target.";
+
+    } else {
+
+        neededDisplay.innerHTML = needed.toFixed(1) + "%";
+        messageDisplay.innerHTML = "This is the score you need on your Lab Report.";
+
+    }
+
+}
+
+</script>
+
+</body>
+</html>
